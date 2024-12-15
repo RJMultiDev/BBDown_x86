@@ -55,7 +55,7 @@ jobs:
           name: BBDown_win-arm64
           path: BBDown_${{ needs.set-date.outputs.date }}_win-arm64.zip
 
-  build-linux-x64-arm64:
+  build-linux-x64-x86:
     runs-on: ubuntu-latest
     needs: set-date
 
@@ -71,7 +71,7 @@ jobs:
           sudo sed -i -e 's/deb http/deb [arch=amd64] http/g' /etc/apt/sources.list
           sudo sed -i -e 's/deb mirror/deb [arch=amd64] mirror/g' /etc/apt/sources.list
           sudo apt-get update
-          sudo apt-get install -y curl wget libicu-dev libcurl4-openssl-dev zlib1g-dev libkrb5-dev clang llvm binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu zlib1g-dev:arm64
+          sudo apt-get install -y curl wget libicu-dev libcurl4-openssl-dev zlib1g-dev libkrb5-dev clang llvm binutils-linux-gnu gcc-linux-gnu zlib1g-dev
       
       - uses: actions/checkout@v1
 
@@ -83,14 +83,14 @@ jobs:
       - name: Publish [linux]
         run: |
           dotnet publish BBDown -r linux-x64 -c Release -o artifact
-          dotnet publish BBDown -r linux-arm64 -c Release -o artifact-arm64
+          dotnet publish BBDown -r linux-x86 -c Release -o artifact-x86
 
       - name: Package [linux]
         run: |
           cd artifact
           zip ../BBDown_${{ needs.set-date.outputs.date }}_linux-x64.zip BBDown
-          cd ../artifact-arm64
-          zip ../BBDown_${{ needs.set-date.outputs.date }}_linux-arm64.zip BBDown
+          cd ../artifact-x86
+          zip ../BBDown_${{ needs.set-date.outputs.date }}_linux-x86.zip BBDown
 
       - name: Upload Artifact [linux-x64]
         uses: actions/upload-artifact@v3.1.3
@@ -102,7 +102,7 @@ jobs:
         uses: actions/upload-artifact@v3.1.3
         with:
           name: BBDown_linux-arm64
-          path: BBDown_${{ needs.set-date.outputs.date }}_linux-arm64.zip
+          path: BBDown_${{ needs.set-date.outputs.date }}_linux-x86.zip
 
   build-mac-x64-arm64:
     runs-on: macos-latest
